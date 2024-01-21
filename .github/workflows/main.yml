@@ -43,4 +43,4 @@ jobs:
           script: |
             cd /home/ubuntu/TravelMemory/frontend
             git pull origin main
-            # Additional deployment steps
+            # Additional deployment stepss
