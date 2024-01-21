@@ -20,60 +20,17 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd frontend
+          cd /home/ubuntu/TravelMemory/frontend
           npm install
 
       - name: Run Tests
         run: |
-          cd frontend
+          cd /home/ubuntu/TravelMemory/frontend
           npm test
 
       - name: Build Frontend
         run: |
-          cd frontend
-          npm run build
-
-      - name: Deploy to Server
-        uses: appleboy/ssh-action@v1.0.3
-        with:
-          host: ${{ secrets.EC2_FRONTEND_HOST }}
-          username: ${{ secrets.EC2_FRONTEND_USERNAME }}
-          key: ${{ secrets.EC2_FRONTEND_SSH_KEY }}
-          port: 22
-          script: |
-            cd name: Frontend CI-CD Pipeline
-
-on:
-  push:
-    branches:
-      - main
-
-jobs:
-  build-and-deploy-frontend:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 14
-
-      - name: Install Dependencies
-        run: |
-          cd frontend
-          npm install
-
-      - name: Run Tests
-        run: |
-          cd frontend
-          npm test
-
-      - name: Build Frontend
-        run: |
-          cd frontend
+          cd /home/ubuntu/TravelMemory/frontend
           npm run build
 
       - name: Deploy to Server
@@ -85,8 +42,5 @@ jobs:
           port: 22
           script: |
             cd /home/ubuntu/TravelMemory/frontend
-            git pull origin main
-            # Additional deployment steps
-
             git pull origin main
             # Additional deployment steps
