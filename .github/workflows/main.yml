@@ -1,46 +1,40 @@
-name: Frontend CI-CD Pipeline
+name: Deploy to EC2 Instance
 
-on:
+on: 
   push:
-    branches:
+    branches: 
       - main
 
+ 
+
 jobs:
-  build-and-deploy-frontend:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
-
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: 14
-
-      - name: Install Dependencies
-        run: |
-          cd /home/ubuntu/TravelMemory/frontend
-          npm install
-
-      - name: Run Tests
-        run: |
-          cd /home/ubuntu/TravelMemory/frontend
-          npm test
-
-      - name: Build Frontend
-        run: |
-          cd /home/ubuntu/TravelMemory/frontend
-          npm run build
-
-      - name: Deploy to Server
+      - name: Checking out code on Runner
+        uses: actions/checkout@v4
+        
+      - name: Login and update the EC2 instance and run commands
         uses: appleboy/ssh-action@v1.0.3
         with:
-          host: ${{ secrets.EC2_FRONTEND_HOST }}
-          username: ${{ secrets.EC2_FRONTEND_USERNAME }}
-          key: ${{ secrets.EC2_FRONTEND_SSH_KEY }}
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           script: |
-            cd /home/ubuntu/TravelMemory/frontend
-            git pull origin main
-            # Additional deployment stepss
+            pwd
+            whoami
+            sudo apt-get update -y
+
+      - name: Copy file via SSH password
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: ./
+          target: /home/ubuntu
+
+
+    
