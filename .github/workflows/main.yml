@@ -1,0 +1,70 @@
+name: CI-CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: |
+          cd /home/ubuntu/TravelMemory/frontend
+          npm install
+
+      - name: Run Tests
+        run: |
+          cd /home/ubuntu/TravelMemory/frontend
+          npm start
+
+  deploy:
+    runs-on: ubuntu-latest
+
+    needs: build
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: SSH into EC2 and Prepare Target Directory
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            cd /home/ubuntu/TravelMemory/frontend
+            git pull origin main
+            npm install
+
+      - name: Copy Files to EC2
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          source: ./
+          target: /home/ubuntu/TravelMemory/frontends
+
+      - name: Restart Nginx
+        uses: appleboy/ssh-action@v1.0.3
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_SSH_KEY }}
+          port: 22
+          script: |
+            sudo systemctl restart nginx
