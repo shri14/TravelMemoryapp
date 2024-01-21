@@ -20,12 +20,11 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd /home/ubuntu/TravelMemory/frontend
+          cd ./frontend
           npm install
-
       - name: Run Tests
         run: |
-          cd /home/ubuntu/TravelMemory/frontend
+          cd ./frontend
           npm start
 
   deploy:
@@ -57,7 +56,7 @@ jobs:
           key: ${{ secrets.EC2_SSH_KEY }}
           port: 22
           source: ./
-          target: /home/ubuntu/TravelMemory/frontends
+          target: /home/ubuntu/TravelMemory/frontend
 
       - name: Restart Nginx
         uses: appleboy/ssh-action@v1.0.3
