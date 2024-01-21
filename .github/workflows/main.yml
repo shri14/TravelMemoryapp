@@ -20,17 +20,17 @@ jobs:
 
       - name: Install Dependencies
         run: |
-          cd /home/ubuntu/TravelMemory/frontend
+          cd /TravelMemory/frontend
           npm install
 
       - name: Lint and Fix
         run: |
-          cd /home/ubuntu/TravelMemory/frontend
+          cd /TravelMemory/frontend
           npm run lint -- --fix
 
       - name: Run Tests
         run: |
-          cd /home/ubuntu/TravelMemory/frontends
+          cd /TravelMemory/frontend
           npm start
 
   deploy:
