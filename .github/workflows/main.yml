@@ -17,12 +17,17 @@ jobs:
         run: |
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt-get install -y nodejs
-          node -v
 
       - name: Install Dependencies
         run: |
           cd ./frontend
           npm install
+
+      - name: Lint and Fix
+        run: |
+          cd ./frontend
+          npm run lint -- --fix
+
       - name: Run Tests
         run: |
           cd ./frontend
